@@ -1,2 +1,2 @@
 ### Miscellaneous_Code_Base
-  - Reference codes from different challenges.
+  - Have source code and Analysis of partially compeleted challenges.
