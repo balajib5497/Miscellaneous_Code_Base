@@ -1,0 +1,205 @@
+class distribution:
+damage_grade 1  --> 9.70 %
+damage_grade 2  --> 13.46 %
+damage_grade 3  --> 19.35 %
+damage_grade 4  --> 24.09 %
+damage_grade 5  --> 33.37 %
+
+
+risk feature in the order of impack:
+1. has_geotechnical_risk
+2. has_geotechnical_risk_landslide
+3. has_geotechnical_risk_fault_crack
+4. has_geotechnical_risk_rock_fall
+5. has_geotechnical_risk_land_settlement
+6. has_geotechnical_risk_flood
+7. has_geotechnical_risk_liquefaction
+8. has_geotechnical_risk_other
+
+usage feature in the order of impack:
+1. has_secondary_use
+2. has_secondary_use_agriculture
+3. has_secondary_use_hotel
+4. has_secondary_use_other, has_secondary_use_rental, 
+5. has_secondary_use_gov_office, has_secondary_use_health_post, has_secondary_use_industry, has_secondary_use_institution
+	has_secondary_use_school, has_secondary_use_use_police
+
+x['usage'] =  5 * x.has_secondary_use
+x['usage'] +=  4 * x.has_secondary_use_agriculture
+x['usage'] +=  3 * x.has_secondary_use_hotel
+x['usage'] +=  (2 * x.has_secondary_use_other) + (2 * x.has_secondary_use_rental)
+x['usage'] +=  x.has_secondary_use_gov_office + x.has_secondary_use_health_post + x.has_secondary_use_industry
+				+ x.has_secondary_use_institution + x.has_secondary_use_school + x.has_secondary_use_use_police
+				
+				
+				
+structure feature in the order of impack:
+positive
+1. has_superstructure_mud_mortar_stone
+2. has_superstructure_timber
+3. has_superstructure_adobe_mud
+4. has_superstructure_bamboo
+5. has_superstructure_mud_mortar_brick
+6. has_superstructure_stone_flag
+7. has_superstructure_other
+
+negative
+1. has_superstructure_cement_mortar_brick
+2. has_superstructure_rc_non_engineered
+3. has_superstructure_rc_engineered
+
+x['structure'] = 10 * x.has_superstructure_mud_mortar_stone 
+x['structure'] += 6 * x.has_superstructure_timber
+x['structure'] += 5 * x.has_superstructure_adobe_mud
+x['structure'] += 4 * x.has_superstructure_bamboo
+x['structure'] += 3 * x.has_superstructure_mud_mortar_brick
+x['structure'] += 2 * x.has_superstructure_stone_flag
+x['structure'] += x.has_superstructure_other
+
+x['structure'] -= 3 * x.has_superstructure_mud_mortar_stone
+x['structure'] -= 2 * x.has_superstructure_mud_mortar_stone
+x['structure'] -= x.has_superstructure_mud_mortar_stone
+
+
+
+
+
+5    0.333710
+4    0.240984
+3    0.193567
+2    0.134678
+1    0.097062
+
+non-categorical columns:
+
+1. count_families    -- fill with mode
+2. count_floors_pre_eq -- fill with mode
+3. count_floors_post_eq -- fill with mode
+4. age_building -- fill with mean
+5. plinth_area_sq_ft -- fill with mean 
+6. height_ft_pre_eq -- fill with mean
+7. height_ft_post_eq -- fill with mean
+
+
+	--- key columns ----
+	--- assuming won't be any missing value ----
+8. district_id 
+9. vdcmun_id
+10. ward_id
+11. building_id
+
+
+
+---columns to be deleted---------
+2. vdcmun_id, ward_id --> have high correlation with district_id
+4. plan configuration has very less correlation with other parameters.
+
+High positive correlations:
+1. has_geotechnical_risk & has_geotechnical_risk_landslide  --> 0.7273
+2. has_secondary_use & has_secondary_use_agriculture --> 0.7348
+3. count_floors_pre_eq & height_ft_pre_eq --> 0.7735
+4. count_floors_post_eq & height_ft_post_eq --> 0.9410
+5. area_assesed_Building removed & condition_post_eq_Damaged-Rubble clear  --> 0.7405
+6. condition_post_eq_Not damaged & has_repair_started_-1  --> 0.7416
+7. roof_type_RCC/RB/RBC & foundation_type_RC   --> 0.719
+8. roof_type_RCC/RB/RBC & other_floor_type_RCC/RB/RBC --> 0.7083
+
+
+top 20 features:
+
+array([63, 54, 30, 45,  4, 56, 46, 70, 52, 64, 67, 49, 40, 38, 39, 37, 28,
+       34, 68, 71, 73, 74, 20,  1,  1, 66, 65, 60, 59, 42, 43, 19, 57, 29,
+       21, 61, 62, 41, 33, 51,  9,  1, 31, 23,  1, 14,  1,  1, 16, 15, 18,
+       17,  1,  1,  1, 22, 36, 35, 32,  1,  1,  1,  1, 27, 26, 25,  3, 24,
+       11, 13, 12, 10,  7,  8,  5,  6, 69, 72, 75, 47, 44, 50, 48, 55, 58,
+       53,  2,  1,  1,  1,  1,  1,  1,  1])
+	   
+	   
+	   
+xgboost:
+--------
+no change on 
+colsample_bylevel = 0.2, 0.3
+colsample_bytree = 0.3, 
+
+ max_delta_step=1      --> increase in precision
+ 
+ 
+ try on - objective functions, try custom one.
+
+Have set max_delta_step = 10 & max_depth = 10 
+-----------------------------------------------------------------
+ model = XGBClassifier(n_estimators=100,
+                      objective='multi:softmax',
+#                     colsample_bytree=0.3,
+#                     colsample_bylevel=0.2,
+                      max_delta_step = 10,
+                      max_depth=10,
+                      silent=False,
+                      random_state=65
+                         )
+						 
+precision    recall  f1-score   support
+
+          1       0.97      0.85      0.91     20173
+          2       0.55      0.53      0.54     28102
+          3       0.51      0.46      0.49     40454
+          4       0.66      0.80      0.73     50091
+          5       1.00      0.96      0.98     69662
+
+avg / total       0.76      0.76      0.76    208482
+------------------------------------------------------------------------------
+						 
+max_depth = 15 gives 0.77
+
+learning_rate=0.01,gives 0.76, 0.75, 0.75
+
+
+models:
+------
+logistric regression
+knn 
+
+columns need to normalize/transform
+------------------------------------
+
+age_building - right skewed
+plinth_area_sq_ft - right skewed
+height_ft_pre_eq - right skewd - log transforms better
+
+
+
+has_repair_started prediction:
+---------------------------------
+
+train_m = x[x['has_repair_started'].isnull() ^ True]
+test_m = x[x['has_repair_started'].isnull()]
+
+model_m1 = XGBClassifier(n_estimators=100,
+                         max_depth=20,
+                         colsample_bytree=0.5)
+model_m1.fit(train_m.drop('has_repair_started', axis=1), train_m['has_repair_started'])
+
+test_m['has_repair_started'] = model_m1.predict(test_m.drop('has_repair_started', axis=1))
+x.loc[test_m.index,'has_repair_started'] = test_m['has_repair_started']
+
+test_xm = testx[testx['has_repair_started'].isnull()]
+test_xm['has_repair_started'] = model_m1.predict(test_xm.drop('has_repair_started', axis=1))
+testx.loc[test_xm.index,'has_repair_started'] = test_xm['has_repair_started']
+
+
+#x_train, x_test, y_train, y_test = train_test_split(train_m.drop('has_repair_started', axis=1), 
+#                                                    train_m['has_repair_started'], 
+#                                                    test_size=0.33, random_state=42)
+#model_m1 = RandomForestClassifier(n_estimators=100, 
+#                                 max_depth=30,
+#                                 max_features=0.6)
+
+#model_m1 = XGBClassifier(n_estimators=100,
+#                         max_depth=20,
+#                         colsample_bytree=0.5)
+#model_m1.fit(x_train, y_train)
+#pred = model_m1.predict(x_test)
+#print(classification_report(pred, y_test, digits=5))
+
+-----------------------------------------------------------------

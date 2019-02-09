@@ -1,0 +1,236 @@
+.TARGET:
+
+0    282686
+1     24825
+
+-> imbalanced
+merge:
+-------
+	-> no need to have all the features
+	-> try appropriate aggregate functions
+	-> 
+-> mostly of customer taking loans are,
+	women, married,
+	
+	
+bureau:
+	drop following:
+	1. CREDIT_CURRENCY 
+	for now don't drop low varience columns
+	
+	if need to drop low varience columns:
+	
+	1. CREDIT_DAY_OVERDUE
+	2. CREDIT_ACTIVE_Bad debt
+	3. CREDIT_ACTIVE_Sold
+	4. CNT_CREDIT_PROLONG
+	
+	need to handle missing values 
+	- will drop columns with lots of missing value after dropping low varience & high correlated columns
+	
+POS_bal:
+NAME_CONTRACT to one-hot encoding
+columns to drop:
+	1. MONTHS_BALANCE
+	
+	if need to drop low varience columns:
+	1. NAME_CONTRACT_STATUS_XNA
+	2. NAME_CONTRACT_STATUS_Returned to the store
+	3. NAME_CONTRACT_STATUS_Demand
+	4. NAME_CONTRACT_STATUS_Canceled
+	5. NAME_CONTRACT_STATUS_Approved
+	6. NAME_CONTRACT_STATUS_Amortized debt
+	
+	
+	
+CC_bal:
+-------
+NAME_CONTRACT to one-hot encoding
+
+AMT_DRAWINGS_ATM_CURRENT_p = AMT_DRAWINGS_ATM_CURRENT / CNT_DRAWINGS_ATM_CURRENT
+AMT_DRAWINGS_CURRENT_p = AMT_DRAWINGS_CURRENT / CNT_DRAWINGS_CURRENT
+AMT_DRAWINGS_OTHER_CURRENT_p = AMT_DRAWINGS_OTHER_CURRENT / CNT_DRAWINGS_OTHER_CURRENT
+AMT_DRAWINGS_POS_CURRENT_p = AMT_DRAWINGS_POS_CURRENT / CNT_DRAWINGS_POS_CURRENT
+
+
+
+prev_appln:
+-----------
+RATE_INTEREST_PRIMARY   - 99 % of missing values
+RATE_INTEREST_PRIVILEGED - 99 % of missing values
+SELLERPLACE_AREA - not sure how to aggregate
+
+
+appln_train:- total obervation 307511
+-----------
+	Categorical variables:
+	----------------------
+	1. NAME_TYPE_SUITE - 
+	2. OCCUPATION_TYPE - 
+	3. FONDKAPREMONT_MODE - 
+	4. HOUSETYPE_MODE - 
+	5. WALLSMATERIAL_MODE - 
+	6. EMERGENCYSTATE_MODE - 
+
+
+missing values:
+--------------
+
+1. OWN_CAR_AGE          - 69 % of NaN\
+
+EXT_SOURCE_1                                    56.38107254699832
+EXT_SOURCE_2                                   	0.21462646864665003
+EXT_SOURCE_3                                   	19.825307062186393
+APARTMENTS_AVG                                  50.749729277977046
+BASEMENTAREA_AVG                                58.515955526794166
+YEARS_BEGINEXPLUATATION_AVG                     48.781019215572776
+YEARS_BUILD_AVG                                 66.49778381911541
+COMMONAREA_AVG                                  69.87229725115525
+ELEVATORS_AVG                                   53.29597965601231
+ENTRANCES_AVG                                   50.34876801155081
+FLOORSMAX_AVG                                   49.76082156410665
+FLOORSMIN_AVG                                   67.84862980511267
+LANDAREA_AVG                                   	59.376737742714894
+LIVINGAPARTMENTS_AVG                            68.35495315614726
+LIVINGAREA_AVG                                  50.193326417591564
+NONLIVINGAPARTMENTS_AVG                         69.43296337366793
+NONLIVINGAREA_AVG                               55.17916432257708
+APARTMENTS_MODE                                 50.749729277977046
+BASEMENTAREA_MODE                               58.515955526794166
+YEARS_BEGINEXPLUATATION_MODE                    48.781019215572776
+YEARS_BUILD_MODE                                66.49778381911541
+COMMONAREA_MODE                                 69.87229725115525
+ELEVATORS_MODE                                  53.29597965601231
+ENTRANCES_MODE                                  50.34876801155081
+FLOORSMAX_MODE                                  49.76082156410665
+FLOORSMIN_MODE                                  67.84862980511267
+LANDAREA_MODE                                   59.376737742714894
+LIVINGAPARTMENTS_MODE                           68.35495315614726
+LIVINGAREA_MODE                                 50.193326417591564
+NONLIVINGAPARTMENTS_MODE                        69.43296337366793
+NONLIVINGAREA_MODE                              55.17916432257708
+APARTMENTS_MEDI                                 50.749729277977046
+BASEMENTAREA_MEDI                               58.515955526794166
+YEARS_BEGINEXPLUATATION_MEDI                    48.781019215572776
+YEARS_BUILD_MEDI                                66.49778381911541
+COMMONAREA_MEDI                                 69.87229725115525
+ELEVATORS_MEDI                                  53.29597965601231
+ENTRANCES_MEDI                                  50.34876801155081
+FLOORSMAX_MEDI                                  49.76082156410665
+FLOORSMIN_MEDI                                  67.84862980511267
+LANDAREA_MEDI                                   59.376737742714894
+LIVINGAPARTMENTS_MEDI                           68.35495315614726
+LIVINGAREA_MEDI                                 50.193326417591564
+NONLIVINGAPARTMENTS_MEDI                        69.43296337366793
+NONLIVINGAREA_MEDI                              55.17916432257708
+FONDKAPREMONT_MODE                              68.38617155158677
+HOUSETYPE_MODE                                  50.176091261776
+TOTALAREA_MODE                                  48.26851722377411
+WALLSMATERIAL_MODE                              50.8407829313423
+EMERGENCYSTATE_MODE                             47.39830445089769
+
+
+
+
+correlations:
+-------------
+
+1. AMT_CREDIT, AMT_GOODS_PRICE  --> 0.98
+2. REGION_RATING_CLIENT, REGION_RATING_CLIENT_W_CITY  --> 0.95
+3. APARTMENTS_AVG, APARTMENTS_MEDI       -->    0.99
+	APARTMENTS_AVG, APARTMENTS_MODE      -->    0.97
+	APARTMENTS_AVG, LIVINGAPARTMENTS_AVG  -->   0.94
+	APARTMENTS_AVG, LIVINGAPARTMENTS_MEDI -->   0.94 
+	APARTMENTS_AVG, LIVINGAPARTMENTS_MODE -->   0.93
+    APARTMENTS_AVG, LIVINGAREA_AVG		  -->   0.91
+	APARTMENTS_AVG, LIVINGAREA_MEDI       -->   0.91
+	APARTMENTS_AVG, LIVINGAREA_MODE 		--> 0.89
+		    
+	//Y APARTMENTS_MODE	   
+	
+	
+4. BASEMENTAREA_AVG, BASEMENTAREA_MEDI  --> 0.99
+	BASEMENTAREA_AVG, BASEMENTAREA_MODE  --> 0.97
+	
+	
+5. YEARS_BEGINEXPLUATATION_AVG, YEARS_BEGINEXPLUATATION_MEDI --> 0.99
+	YEARS_BEGINEXPLUATATION_AVG, YEARS_BEGINEXPLUATATION_MODE --> 0.97
+	
+
+6. YEARS_BUILD_AVG, YEARS_BUILD_MEDI  --> 0.99
+	YEARS_BUILD_AVG, YEARS_BUILD_MODE --> 0.98
+	
+	
+7. COMMONAREA_AVG, COMMONAREA_MEDI --> 0.99
+	COMMONAREA_AVG, COMMONAREA_MODE --> 0.97
+	
+	
+8. ELEVATORS_AVG, MEDI, MODE --> 99,97
+	//Y ELEVATORS_MODE
+	
+9. ENTRANCES_AVG, MEDI, MODE --> 99,97
+
+10. FLOORSMAX_AVG, MEDI, MODE --> 99, 98
+11. FLOORSMIN_AVG, MEDI, MODE --> 99, 98
+12. LANDAREA_AVG, MEDI, MODE --> 99, 97
+
+13. FLOORSMAX_AVG, MEDI, MODE --> 99, 98
+
+--------------------------------------------------
+
+OBS_30_CNT_SOCIAL_CIRCLE, OBS_60_CNT_SOCIAL_CIRCLE  --> 0.99
+
+AMT_APPLICATION_prev, AMT_CREDIT_prev	--> 0.97
+
+AMT_APPLICATION_prev, AMT_GOODS_PRICE_prev	--> 0.92
+
+AMT_CREDIT_prev, AMT_GOODS_PRICE_prev --> 0.92
+
+
+CNT_INSTALMENT_pos, CNT_INSTALMENT_FUTURE_pos  --> 0.95 
+
+
+
+NAME_CONTRACT_TYPE_prev_Cash_loans,  NAME_CASH_LOAN_PURPOSE_prev_XNA  --> 0.92
+
+NAME_CONTRACT_TYPE_prev_Consumer_loans, NAME_PORTFOLIO_prev_POS   --> 0.97
+
+NAME_CONTRACT_TYPE_prev_Revolving_loans, NAME_PORTFOLIO_prev_Cards  --> 0.90
+
+NAME_CONTRACT_STATUS_prev_Unused_offer, CODE_REJECT_REASON_prev_CLIENT  --> 1.0
+
+
+NAME_GOODS_CATEGORY_prev_Clothing_and_Accessories, NAME_SELLER_INDUSTRY_prev_Clothing  --> 0.94
+
+NAME_GOODS_CATEGORY_prev_Furniture, NAME_SELLER_INDUSTRY_prev_Furniture  --> 0.90
+
+NAME_GOODS_CATEGORY_prev_XNA, NAME_SELLER_INDUSTRY_prev_XNA -> 0.90
+
+NAME_PORTFOLIO_prev_Cars, CHANNEL_TYPE_prev_Car_dealer  --> 0.97
+
+
+DAYS_EMPLOYED, ORGANIZATION_TYPE_XNA - 0.999
+DAYS_EMPLOYED, NAME_INCOME_TYPE_Pensioner - 0.999
+
+
+-----------------------------------------------------------------
+
+low varience:
+-------------
+
+
+replace low varience columns with mode.
+or predict values for those columns.
+
+Try following:
+-------------------
+1. undersampling 
+2. ensemble with different models - try different ratio of kfold
+3. 
+
+
+visulize the clusters
+---------------------
+
+
+
